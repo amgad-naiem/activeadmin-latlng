@@ -5,6 +5,7 @@
     var googleMapObject = {
       idLat: '<%= id_lat %>',
       idLng: '<%= id_lng %>',
+      idLink: '<%= id_link %>',
       coords: null,
       map: null,
       marker: null,
@@ -17,9 +18,10 @@
         };
       },
 
-      saveCoordinates: function() {
+      saveCoordinates: function(url) {
         $("#" + googleMapObject.idLat).val( googleMapObject.coords.lat.toFixed(10) );
         $("#" + googleMapObject.idLng).val( googleMapObject.coords.lng.toFixed(10) );
+        $("#" + googleMapObject.idLink).val( url );
       },
 
       init: function() {
@@ -39,12 +41,14 @@
 
         googleMapObject.map.addListener('click', function(e) {
           googleMapObject.coords = { lat: e.latLng.lat(), lng: e.latLng.lng() };
-          googleMapObject.saveCoordinates();
+          let url = e.placeId ? ("https://www.google.com/maps/place/?q=place_id:" + e.placeId) : ("https://www.google.com/maps/search/?api=1&query=" + e.latLng.lat() + "," + e.latLng.lng());
+          googleMapObject.saveCoordinates(url);
           googleMapObject.marker.setPosition(googleMapObject.coords);
         });
 
         googleMapObject.marker.addListener('drag', function(e) {
           googleMapObject.coords = { lat: e.latLng.lat(), lng: e.latLng.lng() };
+          let url = e.placeId ? ("https://www.google.com/maps/place/?q=place_id:" + e.placeId) : ("https://www.google.com/maps/search/?api=1&query=" + e.latLng.lat() + "," + e.latLng.lng());
           googleMapObject.saveCoordinates();
         });
 
@@ -61,7 +65,7 @@
           var location = place.geometry.location;
 
           googleMapObject.coords = { lat: location.lat(), lng: location.lng() };
-          googleMapObject.saveCoordinates();
+          googleMapObject.saveCoordinates(place.url);
 
           googleMapObject.marker.setPosition(location);
           bounds.extend(location);
