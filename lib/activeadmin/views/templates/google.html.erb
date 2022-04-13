@@ -24,7 +24,6 @@
 
       init: function() {
         googleMapObject.coords = googleMapObject.getCoordinates();
-        googleMapObject.saveCoordinates();
 
         googleMapObject.map = new google.maps.Map(document.getElementById('google_map'), {
           center: googleMapObject.coords,
